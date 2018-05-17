@@ -1,6 +1,9 @@
 import {$canvas, $dummyArtist1, $dummyCreator1, $dummyCreator2, $dummySong1} from "./$$DOM";
 import {fs, path} from "./$$nodeRequire";
 import ImageCompressor from "image-compressor.js";
+import {getConfig} from "./readConfig";
+
+let config;
 
 let ctx = $canvas.getContext("2d");
 ctx.fillStyle = "#ffffff";
@@ -57,20 +60,32 @@ function drawText() {
   let thisBeatmap = thisData[3][thisData[2][index]];
   // creator line //
   ctx.font = "14px 'Exo 2'";
-  $dummyCreator2.textContent = thisBeatmap.creator;
+  if (config[thisData[2][index]] && config[thisData[2][index]].creator) {
+    $dummyCreator2.textContent = config[thisData[2][index]].creator;
+  } else {
+    $dummyCreator2.textContent = thisBeatmap.creator;
+  }
   ctx.fillText("mapped by", $dummyCreator1.getBoundingClientRect().left, MAPPED_Y);
   ctx.font = "bold 14px 'Exo 2'";
-  ctx.fillText(thisBeatmap.creator, $dummyCreator2.getBoundingClientRect().left, MAPPED_Y);
+  ctx.fillText($dummyCreator2.textContent, $dummyCreator2.getBoundingClientRect().left, MAPPED_Y);
 
   // artist line //
-  $dummyArtist1.textContent = thisBeatmap.artist;
+  if (config[thisData[2][index]] && config[thisData[2][index]].artist) {
+    $dummyArtist1.textContent = config[thisData[2][index]].artist;
+  } else {
+    $dummyArtist1.textContent = thisBeatmap.artist;
+  }
   ctx.font = "600 italic 20px 'Exo 2'";
-  ctx.fillText(thisBeatmap.artist, $dummyArtist1.getBoundingClientRect().left, ARTIST_Y);
+  ctx.fillText($dummyArtist1.textContent, $dummyArtist1.getBoundingClientRect().left, ARTIST_Y);
 
   // song line //
-  $dummySong1.textContent = thisBeatmap.title;
+  if (config[thisData[2][index]] && config[thisData[2][index]].title) {
+    $dummySong1.textContent = config[thisData[2][index]].title;
+  } else {
+    $dummySong1.textContent = thisBeatmap.title;
+  }
   ctx.font = "600 italic 30px 'Exo 2'";
-  ctx.fillText(thisBeatmap.title, $dummySong1.getBoundingClientRect().left, SONG_Y);
+  ctx.fillText($dummySong1.textContent, $dummySong1.getBoundingClientRect().left, SONG_Y);
 
   saveImage();
 }
@@ -94,6 +109,7 @@ function nextImage() {
 }
 
 export default function renderImages(data) {
+  config = getConfig();
   thisData = data;
   index = 0;
   nextImage();

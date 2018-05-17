@@ -1,4 +1,8 @@
+import {getConfig} from "./readConfig";
 import renderImages from "./renderImages";
+
+let config;
+let key;
 
 let ids;
 let setData = {};
@@ -11,14 +15,10 @@ function noFetch() {
 }
 
 function goFetch() {
-  fetch("https://script.megaapplepi.net/loved-wiki-osu/index.php", {
-    "body": `beatmapset=${encodeURIComponent(ids[index])}`,
+  fetch(`https://osu.ppy.sh/api/get_beatmaps?k=${key}&limit=1&s=${encodeURIComponent(ids[index])}`, {
     "cache": "no-cache",
     "credentials": "same-origin",
-    "headers": {
-      "content-type": "application/x-www-form-urlencoded"
-    },
-    "method": "POST"
+    "method": "GET"
   })
     .then((response) => response.json())
     .then((response) => {
@@ -36,6 +36,9 @@ function goFetch() {
 }
 
 export default function fetchOsuData(data) {
+  config = getConfig();
+  key = config.key;
+
   newData = data;
   ids = data[2];
   index = 0;

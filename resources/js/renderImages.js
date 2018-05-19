@@ -118,8 +118,15 @@ function drawText() {
           // begin comma seperation
           let $comma = document.createElement("span");
           // are we at the the last creator?
-          if (config_creator.indexOf(creator) === config_creator.length - 2) { // if so, serial comma then "and"
+          if (config_creator.indexOf(creator) === config_creator.length - 2) {
+            // if so, are there only two creators?
+            if (config_creator.length === 2) {
+              // if so, use "and"
+              $comma.textContent = " and ";
+            } else {
+              // if not, use serial comma then "and"
             $comma.textContent = ", and ";
+            }
           } else if (config_creator.indexOf(creator) !== config_creator.length - 1) { // are we at the end?
             // if so, just comma
             $comma.textContent = ", ";

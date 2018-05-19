@@ -1,5 +1,6 @@
 import {fs, path} from "./$$nodeRequire";
 import fetchOsuData from "./fetchOsuData";
+import notify from "./notify";
 import {readConfig} from "./readConfig";
 
 let newData;
@@ -22,6 +23,7 @@ export default function fetchIDs(data) {
       file === "config.yaml"
     ) {
       readConfig(path.join(data[0], file));
+      notify(-1, "config file found");
     }
   }
   newData.push(ids);

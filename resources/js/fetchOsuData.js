@@ -1,4 +1,5 @@
 import {getConfig} from "./readConfig";
+import notify from "./notify";
 import renderImages from "./renderImages";
 
 let config;
@@ -38,6 +39,13 @@ function goFetch() {
         // if not, we're done
         noFetch();
       }
+    })
+    .catch((response) => {
+      notify(0, `Error during fetch: ${response}`);
+      notify(1, `Possible invalid osu!api key given`);
+      notify(-1, `osu!api fetch SKIPPED`);
+      // there was an error, skip fetch
+      noFetch();
     });
 }
 
@@ -45,16 +53,17 @@ export default function fetchOsuData(data) {
   // get the config
   config = getConfig();
   key = config.key;
+  newData = data;
 
   // do we have the osu!api key?
   if (key) {
     // if so, go fetch
-    newData = data;
     ids = data[2];
     index = 0;
     goFetch();
   } else {
     // if not, skip fetching
     noFetch();
+    notify(-1, "No osu!api key given; looking at config instead");
   }
 }

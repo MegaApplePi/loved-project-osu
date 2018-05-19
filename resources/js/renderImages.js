@@ -2,6 +2,7 @@ import {$canvas, $dummyArtist1, $dummySong1} from "./$$DOM";
 import {fs, path} from "./$$nodeRequire";
 import ImageCompressor from "image-compressor.js";
 import {getConfig} from "./readConfig";
+import notify from "./notify";
 
 const $dummyCreator = document.getElementById("dummy-creator");
 
@@ -43,12 +44,17 @@ fileReader.onload = (e) => {
   // save the image
   fs.writeFile(path.join(thisData[0], "output", `${thisData[2][index]}.jpg`), imageBuffer, (error) => {
     if (error) {
-      throw error;// hope this doesn't actually happen
+      notify(0, `Error while saving: ${error}`);
     }
     // are there more to go?
-    if (index < thisData[1].length - 1) {
+    if (index < thisData[2].length - 1) {
       // if so, start over with next image
       nextImage(++index);// eslint-disable-line
+    } else {
+      // if not, we're done!
+      notify(-1, "Done!");
+      notify(-1, "Opening output folder");
+      shell.openItem(path.join(thisData[0], "output"));
     }
   });
 };
@@ -125,12 +131,21 @@ function drawText() {
         }
       }
     }
-  } else {
+  } else if (thisBeatmap && thisBeatmap.creator) {
     // if not, use the API
-    $dummyCreator2.textContent = thisBeatmap.creator;
+    let $creator = document.createElement("b");
+    $creator.textContent = thisBeatmap.creator;
+    $dummyCreator.insertAdjacentElement("beforeEnd", $creator);
+    creators.push($creator);
+  } else {
+    notify(0, `Creator not defined for beatmapset: ${beatmapsetID}`);
+    let $creator = document.createElement("b");
+    $creator.textContent = "�";
+    $dummyCreator.insertAdjacentElement("beforeEnd", $creator);
+    creators.push($creator);
   }
+
   ctx.fillText("mapped by", $dummyCreator1.getBoundingClientRect().left, MAPPED_Y);
-  if (creators) {
     for (let creator of creators) {
       if (creators.indexOf(creator) % 2 === 0) {
         ctx.font = "bold 14px 'Exo 2'";
@@ -140,16 +155,15 @@ function drawText() {
         ctx.fillText(creator.textContent, creator.getBoundingClientRect().left, MAPPED_Y);
       }
     }
-  } else {
-    ctx.font = "bold 14px 'Exo 2'";
-    ctx.fillText($dummyCreator2.textContent, $dummyCreator2.getBoundingClientRect().left, MAPPED_Y);
-  }
 
   // artist line //
   if (config[thisData[2][index]] && config[thisData[2][index]].artist) {
     $dummyArtist1.textContent = config[thisData[2][index]].artist;
-  } else {
+  } else if (thisBeatmap && thisBeatmap.artist) {
     $dummyArtist1.textContent = thisBeatmap.artist;
+  } else {
+    notify(0, `Artist not defined for beatmapset: ${beatmapsetID}`);
+    $dummyArtist1.textContent = "�";
   }
   ctx.font = "600 italic 20px 'Exo 2'";
   ctx.fillText($dummyArtist1.textContent, $dummyArtist1.getBoundingClientRect().left, ARTIST_Y);
@@ -157,8 +171,11 @@ function drawText() {
   // song line //
   if (config[thisData[2][index]] && config[thisData[2][index]].title) {
     $dummySong1.textContent = config[thisData[2][index]].title;
-  } else {
+  } else if (thisBeatmap && thisBeatmap.title) {
     $dummySong1.textContent = thisBeatmap.title;
+  } else {
+    notify(0, `Title not found for beatmapset: ${beatmapsetID}`);
+    $dummySong1.textContent = "�";
   }
   ctx.font = "600 italic 30px 'Exo 2'";
   ctx.fillText($dummySong1.textContent, $dummySong1.getBoundingClientRect().left, SONG_Y);

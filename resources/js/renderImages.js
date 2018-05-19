@@ -147,7 +147,7 @@ function drawText() {
     $dummyCreator.insertAdjacentElement("beforeEnd", $creator);
     creators.push($creator);
   } else {
-    notify(0, `Creator not defined for beatmapset: ${beatmapsetID}`);
+    notify(1, `Creator not defined for beatmapset: ${beatmapsetID}`);
     let $creator = document.createElement("b");
     $creator.textContent = "�";
     $dummyCreator.insertAdjacentElement("beforeEnd", $creator);
@@ -171,7 +171,7 @@ function drawText() {
   } else if (thisBeatmap && thisBeatmap.artist) {
     $dummyArtist1.textContent = thisBeatmap.artist;
   } else {
-    notify(0, `Artist not defined for beatmapset: ${beatmapsetID}`);
+    notify(1, `Artist not defined for beatmapset: ${beatmapsetID}`);
     $dummyArtist1.textContent = "�";
   }
   ctx.font = "600 italic 20px 'Exo 2'";
@@ -183,7 +183,7 @@ function drawText() {
   } else if (thisBeatmap && thisBeatmap.title) {
     $dummySong1.textContent = thisBeatmap.title;
   } else {
-    notify(0, `Title not found for beatmapset: ${beatmapsetID}`);
+    notify(1, `Title not defined for beatmapset: ${beatmapsetID}`);
     $dummySong1.textContent = "�";
   }
   ctx.font = "600 italic 30px 'Exo 2'";

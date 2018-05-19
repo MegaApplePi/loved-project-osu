@@ -1,10 +1,16 @@
-# "key": YOUR_API_KEY
-# "227021": BEATMAPSET_ID (FOR OVERRIDES ONLY; LEAVE EMPTY TO USE API VALUES)
-#  "creator": CREATORS
-#  "artist": ARTIST_NAMES
-#  "title": SONG_TITLE
+# "key": "YOUR_API_KEY"
+# "369623": "BEATMAPSET_ID"# (FOR OVERRIDES ONLY; LEAVE EMPTY TO USE API VALUES)
+#   "creator": "SINGLE_CREATOR_NAME"
+#   "creator":
+#   -  "LIST_OF_CREATORS"
+#   -  "or use 'et al.'"
+#   "artist": "ARTIST_NAME"
+#   "title": "SONG_TITLE"
 "key": ""
-"227021":
-  "creator": "slowly"
-  "artist": "down"
-  "title": "Falling"
+"369623":
+  "creator":
+  - "BanchoBot"
+  - "peppy"
+  - "Tom94"
+  "artist": "Cool Dude"
+  "title": "Nice Title"

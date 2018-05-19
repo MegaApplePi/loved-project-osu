@@ -1,28 +1,35 @@
-import {$canvas, $dummyArtist1, $dummyCreator1, $dummyCreator2, $dummySong1} from "./$$DOM";
+import {$canvas, $dummyArtist1, $dummySong1} from "./$$DOM";
 import {fs, path} from "./$$nodeRequire";
 import ImageCompressor from "image-compressor.js";
 import {getConfig} from "./readConfig";
 
+const $dummyCreator = document.getElementById("dummy-creator");
+
 let config;
 
+// set up the canvas context
 let ctx = $canvas.getContext("2d");
 ctx.fillStyle = "#ffffff";
 ctx.shadowColor = "#000";
 ctx.shadowOffsetX = 0;
 ctx.shadowOffsetY = 0;
 ctx.shadowBlur = 10;
+
+// set up the images
 let image;
 let overlay = new Image();
-overlay.src = "resources/img/overlay.png";
+overlay.src = "resources/img/overlay.png";// hoping that this loads first before anything else
 
 let index;
 let thisData;
 
 // canvas text Y-position constants //
+// NOTE: 400 is the bottom; we're offsetting from the bottom
 const MAPPED_Y = 400 - 36;
 const ARTIST_Y = 400 - 62;
 const SONG_Y = 400 - 88;
 
+// filereader to read the blobs generated
 let fileReader = new FileReader();
 fileReader.onload = (e) => {
   let {result} = e.target;
@@ -33,16 +40,20 @@ fileReader.onload = (e) => {
     fs.mkdirSync(path.join(thisData[0], "output"));
   }
 
+  // save the image
   fs.writeFile(path.join(thisData[0], "output", `${thisData[2][index]}.jpg`), imageBuffer, (error) => {
     if (error) {
-      throw error;
+      throw error;// hope this doesn't actually happen
     }
+    // are there more to go?
     if (index < thisData[1].length - 1) {
+      // if so, start over with next image
       nextImage(++index);// eslint-disable-line
     }
   });
 };
 
+// more like save to blob for compression, then save via FileReader
 function saveImage() {
   $canvas.toBlob((blob) => {
     /* eslint-disable */
@@ -57,17 +68,82 @@ function saveImage() {
 }
 
 function drawText() {
+  // beatmapset info
   let thisBeatmap = thisData[3][thisData[2][index]];
+
+  while ($dummyCreator.firstChild) {
+    $dummyCreator.firstChild.remove();
+  }
+  let $dummyCreator1 = document.createElement("span");
+  $dummyCreator1.setAttribute("id", "dummy-creator-1");
+  $dummyCreator1.textContent = "mapped by ";
+  $dummyCreator.insertAdjacentElement("beforeEnd", $dummyCreator1);
   // creator line //
   ctx.font = "14px 'Exo 2'";
+  // list of creator nodes
+  let creators = [];
+
+  let $dummyCreator2 = document.createElement("span");
+  $dummyCreator2.setAttribute("id", "dummy-creator-2");
+  // is there a creator value for this beatmapset from the config?
   if (config[thisData[2][index]] && config[thisData[2][index]].creator) {
-    $dummyCreator2.textContent = config[thisData[2][index]].creator;
+    // if so, use it
+    let config_creator = config[thisData[2][index]].creator;
+    if (typeof config_creator === "string") {
+      $dummyCreator2.textContent = config_creator;
+    } else {
+      for (let creator of config_creator) {
+        if (creator === "et al.") {
+          // remove the comma
+          $dummyCreator.lastChild.remove();
+          creators.pop();
+          // add et al.
+          let $creator = document.createElement("span");
+          $creator.textContent = " et al.";
+          $dummyCreator.insertAdjacentElement("beforeEnd", $creator);
+          creators.push($creator);
+          break;// stop here; ignore proceeding values after this
+        } else {
+          let $creator = document.createElement("b");
+          $creator.textContent = creator;
+          $dummyCreator.insertAdjacentElement("beforeEnd", $creator);
+          creators.push($creator);
+
+          // begin comma seperation
+          let $comma = document.createElement("span");
+          // are we at the the last creator?
+          if (config_creator.indexOf(creator) === config_creator.length - 2) { // if so, serial comma then "and"
+            $comma.textContent = ", and ";
+          } else if (config_creator.indexOf(creator) !== config_creator.length - 1) { // are we at the end?
+            // if so, just comma
+            $comma.textContent = ", ";
+          } // otherwise, nothing
+          // add it to the DOM
+          $dummyCreator.insertAdjacentElement("beforeEnd", $comma);
+          // add it to the creator nodes
+          creators.push($comma);
+        }
+      }
+    }
   } else {
+    // if not, use the API
     $dummyCreator2.textContent = thisBeatmap.creator;
   }
   ctx.fillText("mapped by", $dummyCreator1.getBoundingClientRect().left, MAPPED_Y);
-  ctx.font = "bold 14px 'Exo 2'";
-  ctx.fillText($dummyCreator2.textContent, $dummyCreator2.getBoundingClientRect().left, MAPPED_Y);
+  if (creators) {
+    for (let creator of creators) {
+      if (creators.indexOf(creator) % 2 === 0) {
+        ctx.font = "bold 14px 'Exo 2'";
+        ctx.fillText(creator.textContent, creator.getBoundingClientRect().left, MAPPED_Y);
+      } else {
+        ctx.font = "14px 'Exo 2'";
+        ctx.fillText(creator.textContent, creator.getBoundingClientRect().left, MAPPED_Y);
+      }
+    }
+  } else {
+    ctx.font = "bold 14px 'Exo 2'";
+    ctx.fillText($dummyCreator2.textContent, $dummyCreator2.getBoundingClientRect().left, MAPPED_Y);
+  }
 
   // artist line //
   if (config[thisData[2][index]] && config[thisData[2][index]].artist) {

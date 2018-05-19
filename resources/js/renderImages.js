@@ -1,5 +1,5 @@
 import {$canvas, $dummyArtist1, $dummySong1} from "./$$DOM";
-import {fs, path} from "./$$nodeRequire";
+import {fs, path, shell} from "./$$nodeRequire";
 import ImageCompressor from "image-compressor.js";
 import {getConfig} from "./readConfig";
 import notify from "./notify";
@@ -76,6 +76,7 @@ function saveImage() {
 function drawText() {
   // beatmapset info
   let thisBeatmap = thisData[3][thisData[2][index]];
+  let beatmapsetID = thisData[2][index];
 
   while ($dummyCreator.firstChild) {
     $dummyCreator.firstChild.remove();
@@ -89,17 +90,18 @@ function drawText() {
   // list of creator nodes
   let creators = [];
 
-  let $dummyCreator2 = document.createElement("span");
-  $dummyCreator2.setAttribute("id", "dummy-creator-2");
   // is there a creator value for this beatmapset from the config?
-  if (config[thisData[2][index]] && config[thisData[2][index]].creator) {
+  if (config[beatmapsetID] && config[beatmapsetID].creator) {
     // if so, use it
-    let config_creator = config[thisData[2][index]].creator;
+    let config_creator = config[beatmapsetID].creator;
     if (typeof config_creator === "string") {
-      $dummyCreator2.textContent = config_creator;
+      let $creator = document.createElement("b");
+      $creator.textContent = config_creator;
+      $dummyCreator.insertAdjacentElement("beforeEnd", $creator);
+      creators.push($creator);
     } else {
       for (let creator of config_creator) {
-        if (creator === "et al.") {
+        if (/^et al.$/i.test(creator)) {
           // remove the comma
           $dummyCreator.lastChild.remove();
           creators.pop();
@@ -125,7 +127,7 @@ function drawText() {
               $comma.textContent = " and ";
             } else {
               // if not, use serial comma then "and"
-            $comma.textContent = ", and ";
+              $comma.textContent = ", and ";
             }
           } else if (config_creator.indexOf(creator) !== config_creator.length - 1) { // are we at the end?
             // if so, just comma
@@ -153,15 +155,15 @@ function drawText() {
   }
 
   ctx.fillText("mapped by", $dummyCreator1.getBoundingClientRect().left, MAPPED_Y);
-    for (let creator of creators) {
-      if (creators.indexOf(creator) % 2 === 0) {
-        ctx.font = "bold 14px 'Exo 2'";
-        ctx.fillText(creator.textContent, creator.getBoundingClientRect().left, MAPPED_Y);
-      } else {
-        ctx.font = "14px 'Exo 2'";
-        ctx.fillText(creator.textContent, creator.getBoundingClientRect().left, MAPPED_Y);
-      }
+  for (let creator of creators) {
+    if (creators.indexOf(creator) % 2 === 0) {
+      ctx.font = "bold 14px 'Exo 2'";
+      ctx.fillText(creator.textContent, creator.getBoundingClientRect().left, MAPPED_Y);
+    } else {
+      ctx.font = "14px 'Exo 2'";
+      ctx.fillText(creator.textContent, creator.getBoundingClientRect().left, MAPPED_Y);
     }
+  }
 
   // artist line //
   if (config[thisData[2][index]] && config[thisData[2][index]].artist) {

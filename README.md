@@ -2,17 +2,126 @@
 
 ## Instructions
 
+### Prerequisites
+
 First, you will need these:
 
 - sass
 - node
 
----
+### Compiling and starting
 
 Open the terminal to the cloned location and run `npm run dev` to compile the Sass and Javascript files (after this, you can use `npm run start` instead).
 
-Inside the `dev` folder, there is another folder called `loved`. This folder is the sample folder of what the dropped folder should look like, along with a config file. The config file should have your osu! api key inside it to run osu! api calls. If you don't include it, you must define the creator, artist, and title for each beatmapset in this config file!
+If `npm run dev` fails (because you are on Windows, for example), use `npm run pack` and `npm run sass` (in any order; once the command compiles the files, use `Ctrl` + `C` to kill the process and start the other one). Once this is done, you can use `npm run start` to start the program.
 
-For this to work, include the background images you need and rename them to their beatmapset id, keep the extension. You should not need to crop the images, as they will be resized and positioned automatically (positioning may look weird with some images). The config file can be used to override the osu! api values.
+### Usage
 
-Once that is done, simply drag the `loved` folder into the window and if everything worked out, a new folder called `output` inside the folder that was dropped should be created along with the project loved images.
+Inside the `dev` folder, there is another folder called `loved`. This folder is intended to be the sample folder for what the dropped folder should look like. Copy it and paste it into another location, such as your Desktop (you don't really have to this and just use this folder if you really want to). Henceforth, this new folder will be referenced as `loved`.
+
+Inside the `loved` folder should be a `config.yaml` file for your osu!api key, if you choose to include it, and values that you can enter to override the osu!api values, should the osu!api not provide the wanted values.
+
+For this to work, delete the sample background images, if you hadn't already. Now you must gather the background images (Download the beatmapsets and load them into osu!, go to your `Songs` folder, and copy/paste them into the `loved` folder). **Make sure you rename the images to their beatmapset id number!**
+
+Note: You shouldn't need to crop/resize the images; the program should will handle it for you. Images are positioned 20% down from the top edge. This may cause some images to be positioned in ecchi spots... a feature to manually drag or specifiy the position of the image may be considered soon:tm:.
+
+See [#Config](#config) for config and overrides.
+
+Once the images and config file are ready, drag the `loved` folder into the window. If everything works out, a new folder called `output` inside the `loved` should be created along with the project loved images (this should open automatically, if it didn't).
+
+## Config
+
+Notice: Pay close attention to indentation and hyphenated values! Misusing these may cause a YAML parsing error.
+
+In the examples below, `369623` is the beatmapset id. This must correspond to an image in the `loved` folder.
+
+Note: If you are using the osu!api, you only need to include beatmapset ids for those you want to override (probably for creators).
+
+Note: If the osu!api key is invalid/missing and there are no overrides found, the replacement character `�` is used.
+
+### osu!api key
+
+Note: If you want to just use the osu!api values, this is all you need in the config.yaml file. If you don't, you must input the title, song, and creator(s) for each image in the `loved` folder.
+
+```yaml
+"key": "YOUR_API_KEY"
+```
+
+### Title
+
+Title must be a string value.
+
+```yaml
+"369623":
+  "title": "Nice Title"
+```
+
+### Artist
+
+Artist must be a string value.
+
+```yaml
+"369623":
+  "artist": "Cool Dude"
+```
+
+### Single creator
+
+```yaml
+"369623":
+  "creator": "clayton"
+```
+
+---
+
+This works too:
+
+```yaml
+"369623":
+  "creator":
+  -  "clayton"
+```
+
+### Multiple creators
+
+```yaml
+"369623":
+  "creator":
+  -  "clayton"
+  -  "mangomizer"
+  -  "peppy"
+```
+
+### Creator with "et al."
+
+```yaml
+"369623":
+  "creator":
+  -  "clayton"
+  -  "et al."
+```
+
+Note: `et al.` is recognized as a keyword, not a username (it's an invalid username anyways), this any names proceeding after this value will be ignored (since "et al." is supposed to be at the very end anyways).
+
+### Putting it all together
+
+So this is what it could look like:
+
+```yaml
+"key": "YOUR_API_KEY"
+"369623":
+  "creator":
+  -  "clayton"
+  -  "mangomizer"
+  -  "kaifin"
+  "artist": "Real Artist Name"
+"227021":
+  "creator":
+  -  "MegaApple_Pi"
+  -  "et al."
+  "title": "Wrong one, so here's a better title"
+"89429":
+  "creator":
+  -  "peppy"
+  -  "Ephemeral"
+```

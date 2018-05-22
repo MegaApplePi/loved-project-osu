@@ -3,15 +3,16 @@ import {$notify} from "./$$DOM";
 import fetchIDs from "./fetchIDs";
 import notify from "./notify";
 
-// drop event handler
+// [1] listen for a dropped item
 export default function window_drop(e) {
-  // don't load the file
+  // prevent actually loading the file
   e.preventDefault();
 
   // clean up the notifications
   while ($notify.firstChild) {
     $notify.firstChild.remove();
   }
+
   // get dropped folder
   let folderPath = e.dataTransfer.files[0].path;
 
@@ -20,21 +21,25 @@ export default function window_drop(e) {
     // if so, read the contents
     let files = fs.readdirSync(folderPath);
 
-    // collect the files
+    // [2] collect the files
     let onlyFiles = [];
     for (let file of files) {
       if (fs.statSync(path.join(folderPath, file)).isFile()) {
-        if (!(/^\.DS_Store$/i).test(file)) {
-          onlyFiles.push(file);
+        if ((/^\.DS_Store$/i).test(file)) {
+          // but don't collect the MacOS .DS_Store thing
+          continue;
         }
+        onlyFiles.push(file);
       }
     }
+
+    // [3] the files are collected, time to get the IDs
     let data = [folderPath, onlyFiles];
-    // let's get beatmap ids from the images
     fetchIDs(data);
   } else {
     // if not, error
-    notify(0, "Dropped folder is not a folder!");
+    notify(0, "Dropped item is not a folder!");
   }
-  return false;
+
+  return false;// tell the event handler that we took care of it
 }

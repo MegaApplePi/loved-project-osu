@@ -13,7 +13,7 @@ export default function notify(type, message) {
     $symbol.textContent = "Error: ";
   } else if (type === 1) { // 1 = warning
     $symbol.textContent = "Warn: ";
-  } else { // ? = info
+  } else { // ? or -1 = info
     $symbol.textContent = "Info: ";
   }
   $container.insertAdjacentElement("beforeEnd", $symbol);

@@ -11,9 +11,10 @@ let index;
 let newData;
 
 function noFetch() {
+  // we're done
   // add the beatmapset data to the original data (new data)
   newData.push(setData);
-  // send the new data to renderImages
+  // [9] send the new data to renderImages
   renderImages(newData);
 }
 
@@ -49,13 +50,14 @@ function goFetch() {
     });
 }
 
+
 export default function fetchOsuData(data) {
   // get the config
   config = getConfig();
   key = config.key;
   newData = data;
 
-  // do we have the osu!api key?
+  // [8] do we have the osu!api key?
   if (key) {
     // if so, go fetch
     ids = data[2];

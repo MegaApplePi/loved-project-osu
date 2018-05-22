@@ -11,10 +11,6 @@ let config;
 // set up the canvas context
 let ctx = $canvas.getContext("2d");
 ctx.fillStyle = "#ffffff";
-ctx.shadowColor = "#000";
-ctx.shadowOffsetX = 0;
-ctx.shadowOffsetY = 0;
-ctx.shadowBlur = 10;
 
 // set up the images
 let image;
@@ -74,6 +70,11 @@ function saveImage() {
 }
 
 function drawText() {
+  // set text shadow
+  ctx.shadowColor = "rgba(0,0,0,0.5)";
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 2;
+  ctx.shadowBlur = 4;
   // beatmapset info
   let thisBeatmap = thisData[3][thisData[2][index]];
   let beatmapsetID = thisData[2][index];

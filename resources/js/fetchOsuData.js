@@ -1,6 +1,6 @@
 import {getConfig} from "./readConfig";
 import notify from "./notify";
-import renderImages from "./renderImages";
+import positionImages from "./positionImages";
 
 let config;
 let key;
@@ -15,7 +15,7 @@ function noFetch() {
   // add the beatmapset data to the original data (new data)
   newData.push(setData);
   // [9] send the new data to renderImages
-  renderImages(newData);
+  positionImages(newData);
 }
 
 function goFetch() {

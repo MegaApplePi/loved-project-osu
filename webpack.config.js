@@ -10,7 +10,7 @@ module.exports = {
   "watchOptions": {
     "ignored": /node_modules/
   },
-  "plugins": [
-    new UglifyJsPlugin()
-  ]
+  // "plugins": [
+  //   new UglifyJsPlugin()
+  // ]
 };

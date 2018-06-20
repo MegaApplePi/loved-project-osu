@@ -198,7 +198,7 @@ function image_load() {
   // argu 3 = Y-position from top; use 20% of scaled height
   // argu 4 = image element's original width
   // argu 5 = scaled image height
-  ctx.drawImage(image, 0, (400 * image.naturalWidth / 1000) * 0.2, image.naturalWidth, (400 * image.naturalWidth / 1000), 0, 0, 1000, 400);
+  ctx.drawImage(image, 0, thisData[4][index] * -1, image.naturalWidth, (400 * image.naturalWidth / 1000), 0, 0, 1000, 400);
   image.removeEventListener("load", image_load);
   ctx.drawImage(overlay, 0, 0);
   drawText();

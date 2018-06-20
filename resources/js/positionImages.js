@@ -1,12 +1,14 @@
 import {$dummyArtist1, $dummySong1} from "./$$DOM";
 import {getConfig} from "./readConfig";
 import {path} from "./$$nodeRequire";
+import renderImages from "./renderImages";
 
+const $dummyImage = document.getElementById("dummy-image");
 const $dummyImagePosition = document.getElementById("dummy-image-position");
 const $dummyCreator = document.getElementById("dummy-creator");
 
 let config;
-let thisData;
+let newData;
 let index;
 let background;
 let positions;
@@ -35,13 +37,24 @@ function window_keyup(e) {
     let imagePosition = Number.parseInt($dummyImagePosition.style.getPropertyValue("background-position-y"), 10) || 0;
     positions.push(imagePosition);
 
-    loadImage(++index);
+    index++;
+    if (newData[2][index]) {
+      loadImage();
+    } else {
+      newData.push(positions);
+      renderImages(newData);
+      $dummyImagePosition.style.removeProperty("background-image");
+      $dummyImage.setAttribute("data-hidden", "");
+      $dummyImagePosition.removeEventListener("pointerdown", $dummyImagePosition_pointerdown);
+      window.removeEventListener("pointerup", window_pointerup);
+      window.removeEventListener("keyup", window_keyup);
+    }
   }
 }
 
 function background_load() {
   background.removeEventListener("load", background_load);
-  $dummyImagePosition.style.setProperty("background-position-y", "0px");
+  $dummyImagePosition.style.setProperty("background-position-y", "0");
   $dummyImagePosition.style.setProperty("background-image", `url(${background.src})`);
 
   $dummyImagePosition.addEventListener("pointerdown", $dummyImagePosition_pointerdown, false);
@@ -51,13 +64,13 @@ function background_load() {
 
 function loadImage() {
   background = new Image();
-  background.src = path.join(thisData[0], thisData[1][index]);
+  background.src = path.join(newData[0], newData[1][index]);
   background.addEventListener("load", background_load);
 
 
   // beatmapset info
-  let thisBeatmap = thisData[3][thisData[2][index]];
-  let beatmapsetID = thisData[2][index];
+  let thisBeatmap = newData[3][newData[2][index]];
+  let beatmapsetID = newData[2][index];
 
   while ($dummyCreator.firstChild) {
     $dummyCreator.firstChild.remove();
@@ -134,8 +147,8 @@ function loadImage() {
   }
 
   // artist line //
-  if (config[thisData[2][index]] && config[thisData[2][index]].artist) {
-    $dummyArtist1.textContent = config[thisData[2][index]].artist;
+  if (config[newData[2][index]] && config[newData[2][index]].artist) {
+    $dummyArtist1.textContent = config[newData[2][index]].artist;
   } else if (thisBeatmap && thisBeatmap.artist) {
     $dummyArtist1.textContent = thisBeatmap.artist;
   } else {
@@ -143,8 +156,8 @@ function loadImage() {
   }
 
   // song line //
-  if (config[thisData[2][index]] && config[thisData[2][index]].title) {
-    $dummySong1.textContent = config[thisData[2][index]].title;
+  if (config[newData[2][index]] && config[newData[2][index]].title) {
+    $dummySong1.textContent = config[newData[2][index]].title;
   } else if (thisBeatmap && thisBeatmap.title) {
     $dummySong1.textContent = thisBeatmap.title;
   } else {
@@ -154,7 +167,7 @@ function loadImage() {
 
 export default function positionImages(data) {
   config = getConfig();
-  thisData = data;
+  newData = data;
   index = 0;
   positions = [];
 

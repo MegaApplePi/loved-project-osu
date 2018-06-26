@@ -1,11 +1,37 @@
-import {window_keydown, window_keyup} from "./window_key";
-import window_dragover from "./window_dragover";
-import window_drop from "./window_drop";
+/* globals nodeRequire */
+import Loved from "./Loved";
 
-// [0] set the drop event, this event starts it all
-window.addEventListener("drop", window_drop);
+const remote = nodeRequire("electron").remote;
 
-// other events
-window.addEventListener("dragover", window_dragover);
-window.addEventListener("keydown", window_keydown);
-window.addEventListener("keyup", window_keyup);
+/* keypress events */
+const keyMap = {};
+window.addEventListener("keydown", (e) => {
+  let {key} = e;
+  keyMap[key] = true;
+  return false;
+});
+window.addEventListener("keyup", (e) => {
+  if (keyMap.F12) {
+    remote.getCurrentWindow().toggleDevTools();
+  } else if (keyMap.F5) {
+    remote.getCurrentWindow().reload();
+  }
+  let {key} = e;
+  delete keyMap[key];
+  return false;
+});
+
+
+/* drop events */
+window.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  return false;
+});
+
+window.addEventListener("drop", (e) => {
+  e.preventDefault();
+
+  let loved = new Loved();
+  loved.processDropFolder(e.dataTransfer.files[0].path);
+  return false;
+});

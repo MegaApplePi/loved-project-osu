@@ -8,9 +8,10 @@ let win;
 function createWindow() {
   win = new BrowserWindow({
     "height": 600,
-    "minWidth": 750,
-    "width": 750/* , */
-    // "maximizable": false
+    "minHeight": 600,
+    "minWidth": 1000,
+    "width": 1000,
+    "maximizable": false
     // "icon": path.join(__dirname, "/resources/icon/png/256.png")
   });
   win.setMenu(null);

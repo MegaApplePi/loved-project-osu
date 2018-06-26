@@ -1,5 +1,3 @@
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-
 module.exports = {
   "entry": "./resources/js/app.js",
   "externals": ["electron", "fs"],
@@ -9,8 +7,5 @@ module.exports = {
   "watch": true,
   "watchOptions": {
     "ignored": /node_modules/
-  },
-  // "plugins": [
-  //   new UglifyJsPlugin()
-  // ]
+  }
 };

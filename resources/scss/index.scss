@@ -2,6 +2,19 @@ body{
   padding: 0;
   margin: 0;
 
+  #dropzone{
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    height: 400px;
+    justify-content: center;
+    left: 0;
+    padding: 16px;
+    position: absolute;
+    top: 0;
+    width: 1000px;
+  }
+
   #dummy{
     color: #fff;
     cursor: default;

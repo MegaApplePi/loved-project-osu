@@ -19,13 +19,11 @@ If `npm run dev` fails (because you are on Windows, for example), use `npm run p
 
 Inside the `dev` folder, there is another folder called `loved`. This folder is intended to be the sample folder for what the dropped folder should look like. Copy it and paste it into another location, such as your Desktop (you don't really have to this and just use this folder if you really want to). Henceforth, this new folder will be referenced as `loved`.
 
-Inside the `loved` folder should be a `config.yaml` file for your osu!api key, if you choose to include it, and values that you can enter to override the osu!api values, should the osu!api not provide the wanted values.
+Inside the `loved` folder should be a `config.yaml` file for your osu!api key, if you choose to include it, and values that you can enter to override the osu!api values, should the osu!api not provide the wanted values. See [#Config](#config) for config and overrides.
 
 For this to work, delete the sample background images, if you hadn't already. Now you must gather the background images (Download the beatmapsets and load them into osu!, go to your `Songs` folder, and copy/paste them into the `loved` folder). **Make sure you rename the images to their beatmapset id number!**
 
-Note: You shouldn't need to crop/resize the images; the program should will handle it for you. Images are positioned 20% down from the top edge. This may cause some images to be positioned in ecchi spots... a feature to manually drag or specifiy the position of the image may be considered soon:tm:.
-
-See [#Config](#config) for config and overrides.
+Click and drag the image up or down to position the image. Then press `Enter` to advance to the next image.
 
 Once the images and config file are ready, drag the `loved` folder into the window. If everything works out, a new folder called `output` inside the `loved` should be created along with the project loved images (this should open automatically, if it didn't).
 

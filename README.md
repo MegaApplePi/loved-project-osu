@@ -1,5 +1,7 @@
 # loved-project-osu
 
+> RIP May 2018 - September 2018; A tool to generate images for project loved. Shortly died after clayton found an alternate fix.
+
 ## Instructions
 
 ### Prerequisites
